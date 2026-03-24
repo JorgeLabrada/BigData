@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}"{{ query }}" — Vinyl Search{% endblock %}
+
+{% block content %}
+<section class="results-page">
+
+  <!-- Search bar (sticky repeat) -->
+  <div class="results-search-bar">
+    <form class="search-form search-form--compact" action="/search" method="get" autocomplete="off">
+      <div class="search-box-wrap" id="searchWrap">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          name="q"
+          value="{{ query }}"
+          spellcheck="false"
+        />
+        <button class="search-btn" type="submit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+        <ul class="autocomplete-list" id="autocompleteList"></ul>
+      </div>
+    </form>
+  </div>
+
+  <!-- Result meta -->
+  <div class="results-meta">
+    <div class="results-meta-left">
+      {% if total_results > 0 %}
+        <span class="results-count">{{ total_results }} result{% if total_results != 1 %}s{% endif %}</span>
+        <span class="results-for">for <em>"{{ query }}"</em></span>
+      {% else %}
+        <span class="results-count no-results">No results found for <em>"{{ query }}"</em></span>
+      {% endif %}
+    </div>
+    <div class="results-meta-right">
+      <span class="search-time">{{ search_time_ms }} ms</span>
+      <span class="stat-badge">{{ stats.total_documents }} docs</span>
+      <span class="stat-badge">{{ stats.vocabulary_size }} terms</span>
+    </div>
+  </div>
+
+  {% if query_terms %}
+  <div class="query-terms-row">
+    <span class="qt-label">Stemmed tokens:</span>
+    {% for t in query_terms %}
+      <span class="qt-token">{{ t }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Results list -->
+  {% if results %}
+  <ol class="result-list">
+    {% for r in results %}
+    <li class="result-card">
+      <div class="result-header">
+        <div class="result-rank">#{{ loop.index }}</div>
+        <div class="result-title-block">
+          <h2 class="result-title">{{ r.title }}</h2>
+          <div class="result-meta-row">
+            <span class="result-tag result-tag--cat">{{ r.category }}</span>
+            <span class="result-tag result-tag--artist">{{ r.artist }}</span>
+          </div>
+        </div>
+        <div class="result-score-block">
+          <span class="result-score-label">BM25</span>
+          <span class="result-score">{{ r.score }}</span>
+        </div>
+      </div>
+
+      <p class="result-snippet" data-terms="{{ query_terms | join(' ') }}">
+        {{ r.text }}
+      </p>
+
+      <div class="result-footer">
+        <a href="{{ r.source }}" target="_blank" rel="noopener" class="result-source-link">
+          ↗ Source
+        </a>
+        <button class="result-expand-btn" onclick="toggleExpand(this)">Show full text</button>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <div class="no-results-block">
+    <div class="no-results-icon">♪</div>
+    <p>No documents matched your query. Try different keywords.</p>
+    <a href="/" class="back-link">← Back to search</a>
+  </div>
+  {% endif %}
+
+</section>
+
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+<script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Vinyl — Music Search{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-bg">
+    <div class="grooves"></div>
+  </div>
+  <div class="hero-inner">
+    <h1 class="hero-title">
+      <span class="hero-title-line1">Search the</span>
+      <span class="hero-title-line2">Music</span>
+      <span class="hero-title-line3">Universe</span>
+    </h1>
+    <p class="hero-subtitle">Album reviews · Artist biographies · BM25-ranked results</p>
+
+    <form class="search-form" action="/search" method="get" autocomplete="off">
+      <div class="search-box-wrap" id="searchWrap">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          name="q"
+          placeholder="Search something rey"
+          autofocus
+          spellcheck="false"
+        />
+        <button class="search-btn" type="submit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+        <ul class="autocomplete-list" id="autocompleteList"></ul>
+      </div>
+    </form>
+
+    <div class="hero-stats">
+      <div class="stat-pill">
+        <span class="stat-num">{{ stats.total_documents }}</span>
+        <span class="stat-label">Documents</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">{{ stats.vocabulary_size }}</span>
+        <span class="stat-label">Terms indexed</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">BM25</span>
+        <span class="stat-label">Ranking model</span>
+      </div>
+    </div>
+
+    <div class="example-queries">
+      <span class="eq-label">Try →</span>
+      <button class="eq-chip" onclick="fillSearch('Radiohead OK Computer')">Radiohead OK Computer</button>
+      <button class="eq-chip" onclick="fillSearch('jazz improvisation Miles Davis')">jazz Miles Davis</button>
+      <button class="eq-chip" onclick="fillSearch('Beyoncé Lemonade Black Lives')">Beyoncé Black Lives</button>
+      <button class="eq-chip" onclick="fillSearch('guitar rock album')">guitar rock album</button>
+    </div>
+  </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+<script>
+function fillSearch(q) {
+  document.getElementById('searchInput').value = q;
+  document.getElementById('searchInput').focus();
+}
+</script>
+{% endblock %}

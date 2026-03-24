@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Index Viewer — Vinyl{% endblock %}
+
+{% block content %}
+<section class="index-view-page">
+  <div class="iv-header">
+    <h1 class="iv-title">Inverted Index <span class="iv-subtitle">Viewer</span></h1>
+    <div class="iv-stats-row">
+      <div class="iv-stat"><span class="iv-stat-n">{{ stats.total_documents }}</span><span class="iv-stat-l">Documents</span></div>
+      <div class="iv-stat"><span class="iv-stat-n">{{ stats.vocabulary_size }}</span><span class="iv-stat-l">Unique terms</span></div>
+      <div class="iv-stat"><span class="iv-stat-n">{{ stats.avg_doc_length }}</span><span class="iv-stat-l">Avg. tokens/doc</span></div>
+    </div>
+  </div>
+
+  <div class="iv-body">
+    <!-- Top terms table -->
+    <div class="iv-panel">
+      <h2 class="iv-panel-title">Top 50 Terms by Document Frequency</h2>
+      <div class="iv-table-scroll">
+        <table class="iv-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Term</th>
+              <th>Doc Freq</th>
+              <th>Documents (IDs)</th>
+              <th>DF bar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in data.top_terms %}
+            <tr>
+              <td class="iv-rank">{{ loop.index }}</td>
+              <td class="iv-term">{{ item.term }}</td>
+              <td class="iv-df">{{ item.df }}</td>
+              <td class="iv-docs">
+                {% for d in item.docs %}
+                  <span class="iv-doc-badge">{{ d }}</span>
+                {% endfor %}
+              </td>
+              <td class="iv-bar-cell">
+                <div class="iv-bar" style="width: {{ (item.df / data.top_terms[0].df * 100) | int }}%"></div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Document lengths -->
+    <div class="iv-panel">
+      <h2 class="iv-panel-title">Document Lengths (token count after preprocessing)</h2>
+      <div class="iv-doc-grid">
+        {% for doc_id, length in data.doc_lengths.items() %}
+        <div class="iv-doc-card">
+          <span class="iv-doc-id">Doc {{ doc_id }}</span>
+          <div class="iv-doc-bar-wrap">
+            <div class="iv-doc-bar" style="width: {{ [length, 400]|min / 4 }}px"></div>
+          </div>
+          <span class="iv-doc-len">{{ length }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

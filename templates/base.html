@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}tecomusic — Music Search{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="logo">
+      <span class="logo-record">◉</span>
+      <span class="logo-text">Nombre original de motor .jpg</span>
+    </a>
+    <nav class="site-nav">
+      <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Search</a>
+      <a href="/index-view" class="nav-link {% if request.path == '/index-view' %}active{% endif %}">Index</a>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <span>tecomusic — Music Search Engine · Jorge Alfonso Labrada Ramos</span>
+    <span class="footer-stats">
+      {{ stats.total_documents }} docs &nbsp;·&nbsp;
+      {{ stats.vocabulary_size }} terms
+    </span>
+  </footer>
+</body>
+</html>
